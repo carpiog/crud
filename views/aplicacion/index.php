@@ -1,11 +1,11 @@
-<h1 class="text-center">Formulario de Apps</h1>
+<h1 class="text-center">Formulario de Aplicaciones</h1>
 <div class="row justify-content-center mb-4">
     <form id="formAplicacion" class="border shadow p-4 col-lg-4">
         <input type="hidden" name="app_id" id="app_id">
         <div class="row mb-3">
             <div class="col">
-                <label for="nombre">Nombre de la Aplicacion</label>
-                <input type="text" name="nombre" id="nombre" class="form-control">
+                <label for="app_nombre">Nombre de la Aplicacion</label>
+                <input type="text" name="app_nombre" id="app_nombre" class="form-control">
             </div>
         </div>
         <div class="row">
@@ -26,7 +26,7 @@
         <table class="table table-bordered table-hover" id="tablaAplicacion">
             <thead>
                 <tr>
-                    <th>NO.</th>
+                    <th>No.</th>
                     <th>Nombre</th>
                     <th>Acciones</th>
                 </tr>

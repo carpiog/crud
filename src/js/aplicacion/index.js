@@ -78,10 +78,12 @@ const buscar = async () => {
                 const td1 = document.createElement('td');
                 const td2 = document.createElement('td');
                 const td3 = document.createElement('td');
+                const td4 = document.createElement('td');
                 const buttonModificar = document.createElement('button');
                 const buttonEliminar = document.createElement('button');
+
                 td1.innerText = counter
-                td2.innerText = aplicacion.nombre
+                td2.innerText = aplicacion.app_nombre
 
                 buttonModificar.classList.add('btn', 'btn-warning')
                 buttonEliminar.classList.add('btn', 'btn-danger')
@@ -92,20 +94,21 @@ const buscar = async () => {
                 buttonEliminar.addEventListener('click', () => eliminar(aplicacion))
 
                 td3.appendChild(buttonModificar)
-                td3.appendChild(buttonEliminar)
+                td4.appendChild(buttonEliminar)
 
                 counter++
 
                 tr.appendChild(td1)
                 tr.appendChild(td2)
                 tr.appendChild(td3)
+                tr.appendChild(td4)
                 fragment.appendChild(tr)
             })
         } else {
             const tr = document.createElement('tr');
             const td = document.createElement('td');
-            td.innerText = "No hay Apps"
-            td.colSpan = 4
+            td.innerText = "No hay APPS"
+            td.colSpan = 3
 
             tr.appendChild(td)
             fragment.appendChild(tr)
@@ -121,8 +124,8 @@ buscar();
 
 const traerDatos = (aplicacion) => {
     console.log(aplicacion);
-    formulario.pro_id.value = aplicacion.id
-    formulario.nombre.value = aplicacion.nombre
+    formulario.app_id.value = aplicacion.id
+    formulario.app_nombre.value = aplicacion.app_nombre
     tabla.parentElement.parentElement.style.display = 'none'
 
     btnGuardar.parentElement.style.display = 'none'
@@ -150,7 +153,7 @@ const modificar = async (e) => {
     if (!validarFormulario(formulario)) {
         Swal.fire({
             title: "Campos vacios",
-            text: "Debe llenar el campo",
+            text: "Debe llenar todos los campos",
             icon: "info"
         })
         return
@@ -159,6 +162,7 @@ const modificar = async (e) => {
     try {
         const body = new FormData(formulario)
         const url = "/crud/API/aplicacion/modificar"
+
         const config = {
             method: 'POST',
             body
@@ -205,8 +209,8 @@ const eliminar = async (aplicacion) => {
     if (confirmacion.isConfirmed) {
         try {
             const body = new FormData()
-            body.append('id', aplicacion.id)
-            const url = "/crud/API/aplicacion/eliminar"
+            body.append('id', aplicacion.app_id)
+            const url = "/crud/API/aplicacion/buscar"
             const config = {
                 method: 'POST',
                 body

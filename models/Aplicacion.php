@@ -22,7 +22,7 @@ class Aplicacion extends ActiveRecord
 
     public static function obtenerAplicacionconQuery()
     {
-        $sql = "SELECT * FROM aplicaciion where app_situacion = 1";
+        $sql = "SELECT * FROM aplicacion where app_situacion = 1";
         return self::fetchArray($sql);
     }
 }
