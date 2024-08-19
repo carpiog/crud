@@ -11,7 +11,7 @@ class AplicacionController
     public static function index(Router $router)
     {
         $aplicaciones = Aplicacion::find(2);
-        $router->render('aplicaciones/index', [
+        $router->render('aplicacion/index', [
             'aplicaciones' => $aplicaciones
         ]);
     }
@@ -87,7 +87,7 @@ class AplicacionController
     public static function eliminarAPI()
     {
 
-        $id = filter_var($_POST['id'], FILTER_SANITIZE_NUMBER_INT);
+        $id = filter_var($_POST['app_id'], FILTER_SANITIZE_NUMBER_INT);
         try {
 
             $aplicacion = Aplicacion::find($id);
