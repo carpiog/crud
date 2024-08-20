@@ -4,7 +4,7 @@
         <input type="hidden" name="app_id" id="app_id">
         <div class="row mb-3">
             <div class="col">
-                <label for="app_nombre">Nombre de la Aplicacion</label>
+                <label for="app_nombre">Nombre de la Aplicación</label>
                 <input type="text" name="app_nombre" id="app_nombre" class="form-control">
             </div>
         </div>

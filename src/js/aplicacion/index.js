@@ -2,7 +2,6 @@ import { Dropdown } from "bootstrap";
 import { Toast, validarFormulario } from "../funciones";
 import Swal from "sweetalert2";
 
-
 const formulario = document.getElementById('formAplicacion')
 const tabla = document.getElementById('tablaAplicacion')
 const btnGuardar = document.getElementById('btnGuardar')
@@ -19,7 +18,7 @@ const guardar = async (e) => {
 
     if (!validarFormulario(formulario, ['app_id'])) {
         Swal.fire({
-            title: "Campos vacios",
+            title: "Campos vacíos",
             text: "Debe llenar todos los campos",
             icon: "info"
         })
@@ -56,7 +55,6 @@ const guardar = async (e) => {
         console.log(error);
     }
 }
-
 
 const buscar = async () => {
     try {
@@ -124,7 +122,7 @@ buscar();
 
 const traerDatos = (aplicacion) => {
     console.log(aplicacion);
-    formulario.app_id.value = aplicacion.id
+    formulario.app_id.value = aplicacion.app_id
     formulario.app_nombre.value = aplicacion.app_nombre
     tabla.parentElement.parentElement.style.display = 'none'
 
@@ -152,7 +150,7 @@ const modificar = async (e) => {
 
     if (!validarFormulario(formulario)) {
         Swal.fire({
-            title: "Campos vacios",
+            title: "Campos vacíos",
             text: "Debe llenar todos los campos",
             icon: "info"
         })
@@ -196,21 +194,20 @@ const modificar = async (e) => {
 const eliminar = async (aplicacion) => {
     let confirmacion = await Swal.fire({
         icon: 'question',
-        title: 'Confirmacion',
-        text: '¿Esta seguro que desea eliminar este registro?',
+        title: 'Confirmación',
+        text: '¿Está seguro que desea eliminar este registro?',
         showCancelButton: true,
-        confirmButtonText: 'Si, eliminar',
+        confirmButtonText: 'Sí, eliminar',
         cancelButtonText: 'No, cancelar',
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        // input: 'text'
     })
     console.log(confirmacion);
     if (confirmacion.isConfirmed) {
         try {
             const body = new FormData()
             body.append('id', aplicacion.app_id)
-            const url = "/crud/API/aplicacion/buscar"
+            const url = "/crud/API/aplicacion/eliminar" // Ruta corregida
             const config = {
                 method: 'POST',
                 body
@@ -222,7 +219,6 @@ const eliminar = async (aplicacion) => {
             let icon = 'info'
             if (codigo == 1) {
                 icon = 'success'
-                formulario.reset();
                 buscar();
             } else {
                 icon = 'error'
@@ -233,13 +229,13 @@ const eliminar = async (aplicacion) => {
                 icon: icon,
                 title: mensaje
             })
+
         } catch (error) {
             console.log(error);
         }
     }
-
 }
 
 formulario.addEventListener('submit', guardar)
-btnCancelar.addEventListener('click', cancelar)
 btnModificar.addEventListener('click', modificar)
+btnCancelar.addEventListener('click', cancelar)
