@@ -82,11 +82,18 @@ const buscar = async () => {
                 td1.innerText = counter;
                 td2.innerText = usuario.usu_nombre;
                 td3.innerText = usuario.usu_catalogo;
-                td4.innerHTML = `
-                    <button class="btn btn-warning" onclick="traerDatos(${usuario.usu_id})">Modificar</button>
-                    <button class="btn btn-danger" onclick="eliminar(${usuario.usu_id})">Eliminar</button>
-                `;
-                
+
+                buttonModificar.classList.add('btn', 'btn-warning');
+                buttonEliminar.classList.add('btn', 'btn-danger');
+                buttonModificar.innerText = 'Modificar';
+                buttonEliminar.innerText = 'Eliminar';
+
+                buttonModificar.addEventListener('click', () => traerDatos(usuario));
+                buttonEliminar.addEventListener('click', () => eliminar(usuario));
+
+                td4.appendChild(buttonModificar);
+                td4.appendChild(buttonEliminar);
+
                 counter++;
 
                 tr.appendChild(td1);
@@ -117,7 +124,6 @@ const traerDatos = (usuario) => {
     formulario.usu_id.value = usuario.usu_id;
     formulario.usu_nombre.value = usuario.usu_nombre;
     formulario.usu_catalogo.value = usuario.usu_catalogo;
-    formulario.usu_password.value = ''; // Deja el campo de contraseña vacío para editar
     tabla.parentElement.parentElement.style.display = 'none';
 
     btnGuardar.parentElement.style.display = 'none';
@@ -128,33 +134,10 @@ const traerDatos = (usuario) => {
     btnCancelar.disabled = false;
 };
 
-const cancelar = () => {
-    tabla.parentElement.parentElement.style.display = '';
-    formulario.reset();
-    btnGuardar.parentElement.style.display = '';
-    btnGuardar.disabled = false;
-    btnModificar.parentElement.style.display = 'none';
-    btnModificar.disabled = true;
-    btnCancelar.parentElement.style.display = 'none';
-    btnCancelar.disabled = true;
-};
-
-const modificar = async (e) => {
-    e.preventDefault();
-
-    if (!validarFormulario(formulario)) {
-        Swal.fire({
-            title: "Campos vacíos",
-            text: "Debe llenar todos los campos",
-            icon: "info"
-        });
-        return;
-    }
-
+const modificar = async () => {
     try {
         const body = new FormData(formulario);
         const url = "/crud/API/usuario/modificar";
-
         const config = {
             method: 'POST',
             body
@@ -184,22 +167,22 @@ const modificar = async (e) => {
     }
 };
 
-const eliminar = async (usu_id) => {
-    let confirmacion = await Swal.fire({
-        icon: 'question',
-        title: 'Confirmación',
-        text: '¿Está seguro que desea eliminar este registro?',
+const eliminar = async (usuario) => {
+    const result = await Swal.fire({
+        title: '¿Estás seguro?',
+        text: `Eliminarás el usuario ${usuario.usu_nombre}`,
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'No, cancelar',
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
     });
 
-    if (confirmacion.isConfirmed) {
+    if (result.isConfirmed) {
         try {
             const body = new FormData();
-            body.append('usu_id', usu_id);
+            body.append('usu_id', usuario.usu_id);
 
             const url = "/crud/API/usuario/eliminar";
             const config = {
@@ -228,6 +211,17 @@ const eliminar = async (usu_id) => {
             console.log(error);
         }
     }
+};
+
+const cancelar = () => {
+    tabla.parentElement.parentElement.style.display = '';
+    formulario.reset();
+    btnGuardar.parentElement.style.display = '';
+    btnGuardar.disabled = false;
+    btnModificar.parentElement.style.display = 'none';
+    btnModificar.disabled = true;
+    btnCancelar.parentElement.style.display = 'none';
+    btnCancelar.disabled = true;
 };
 
 btnGuardar.addEventListener('click', guardar);
