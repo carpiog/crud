@@ -189,53 +189,54 @@ const modificar = async (e) => {
     } catch (error) {
         console.log(error);
     }
-}
 
 const eliminar = async (aplicacion) => {
-    let confirmacion = await Swal.fire({
-        icon: 'question',
-        title: 'Confirmación',
-        text: '¿Está seguro que desea eliminar este registro?',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'No, cancelar',
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-    })
-    console.log(confirmacion);
-    if (confirmacion.isConfirmed) {
-        try {
-            const body = new FormData()
-            body.append('id', aplicacion.app_id)
-            const url = "/crud/API/aplicacion/eliminar" // Ruta corregida
-            const config = {
-                method: 'POST',
-                body
+        let confirmacion = await Swal.fire({
+            icon: 'question',
+            title: 'Confirmación',
+            text: '¿Está seguro que desea eliminar este registro?',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'No, cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+        });
+
+        if (confirmacion.isConfirmed) {
+            try {
+                const body = new FormData();
+                body.append('id', aplicacion.id);
+
+                const url = "/crud/API/aplicacion/eliminar";
+                const config = {
+                    method: 'POST',
+                    body
+                };
+
+                const respuesta = await fetch(url, config);
+                const data = await respuesta.json();
+                const { codigo, mensaje, detalle } = data;
+                let icon = 'info';
+                if (codigo == 1) {
+                    icon = 'success';
+                    buscar();
+                } else {
+                    icon = 'error';
+                    console.log(detalle);
+                }
+
+                Toast.fire({
+                    icon: icon,
+                    title: mensaje
+                });
+
+            } catch (error) {
+                console.log(error);
             }
-
-            const respuesta = await fetch(url, config);
-            const data = await respuesta.json();
-            const { codigo, mensaje, detalle } = data;
-            let icon = 'info'
-            if (codigo == 1) {
-                icon = 'success'
-                buscar();
-            } else {
-                icon = 'error'
-                console.log(detalle);
-            }
-
-            Toast.fire({
-                icon: icon,
-                title: mensaje
-            })
-
-        } catch (error) {
-            console.log(error);
         }
-    }
-}
+    };
 
+};
 formulario.addEventListener('submit', guardar)
 btnModificar.addEventListener('click', modificar)
 btnCancelar.addEventListener('click', cancelar)

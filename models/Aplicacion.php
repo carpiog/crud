@@ -6,7 +6,7 @@ class Aplicacion extends ActiveRecord
 {
     protected static $tabla = 'aplicacion';
     protected static $idTabla = 'app_id';
-    protected static $columnasDB = ['app_id', 'app_nombre', 'app_situacion']; // Agregada 'app_id'
+    protected static $columnasDB = ['app_id', 'app_nombre', 'app_situacion'];
 
     public $app_id;
     public $app_nombre;
