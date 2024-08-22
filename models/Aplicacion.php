@@ -12,6 +12,7 @@ class Aplicacion extends ActiveRecord
     public $app_nombre;
     public $app_situacion;
 
+
     public function __construct($args = [])
     {
         $this->app_id = $args['app_id'] ?? null;
@@ -21,7 +22,7 @@ class Aplicacion extends ActiveRecord
 
     public static function obtenerAplicacionconQuery()
     {
-        $sql = "SELECT * FROM aplicacion WHERE app_situacion = 1";
+        $sql = "SELECT * FROM aplicacion where app_situacion = 1";
         return self::fetchArray($sql);
     }
-}
+};

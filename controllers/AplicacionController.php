@@ -10,27 +10,28 @@ class AplicacionController
 {
     public static function index(Router $router)
     {
-
-        $router->render('aplicacion/index', []);
+        $aplicaciones = Aplicacion::find(2);
+        $router->render('aplicacion/index', [
+            'aplicacion' => $aplicaciones
+        ]);
     }
 
     public static function guardarAPI()
     {
         $_POST['app_nombre'] = htmlspecialchars($_POST['app_nombre']);
-
         try {
             $aplicacion = new Aplicacion($_POST);
             $resultado = $aplicacion->crear();
             http_response_code(200);
             echo json_encode([
                 'codigo' => 1,
-                'mensaje' => 'App guardada exitosamente',
+                'mensaje' => 'Producto guardado exitosamente',
             ]);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'Error al guardar App',
+                'mensaje' => 'Error al guardar producto',
                 'detalle' => $e->getMessage(),
             ]);
         }
@@ -53,7 +54,7 @@ class AplicacionController
             http_response_code(500);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'Error al buscar Apps',
+                'mensaje' => 'Error al buscar productos',
                 'detalle' => $e->getMessage(),
             ]);
         }
@@ -71,50 +72,40 @@ class AplicacionController
             http_response_code(200);
             echo json_encode([
                 'codigo' => 1,
-                'mensaje' => 'App modificada exitosamente',
+                'mensaje' => 'Producto modificado exitosamente',
             ]);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'Error al modificar APP',
+                'mensaje' => 'Error al modificar producto',
                 'detalle' => $e->getMessage(),
             ]);
         }
     }
+
     public static function eliminarAPI()
     {
-        if (!isset($_POST['app_id']) || empty($_POST['app_id'])) {
-            http_response_code(400); // Bad Request
-            echo json_encode([
-                'codigo' => 0,
-                'mensaje' => 'ID de aplicación no proporcionado',
-            ]);
-            return;
-        }
 
         $id = filter_var($_POST['app_id'], FILTER_SANITIZE_NUMBER_INT);
         try {
+
             $aplicacion = Aplicacion::find($id);
-            if ($aplicacion) {
-                $aplicacion->eliminar();
-                http_response_code(200);
-                echo json_encode([
-                    'codigo' => 1,
-                    'mensaje' => 'APP eliminada exitosamente',
-                ]);
-            } else {
-                http_response_code(404); // Not Found
-                echo json_encode([
-                    'codigo' => 0,
-                    'mensaje' => 'APP no encontrada',
-                ]);
-            }
+            // $producto->sincronizar([
+            //     'situacion' => 0
+            // ]);
+            // $producto->actualizar();
+            $aplicacion->eliminar();
+            http_response_code(200);
+            echo json_encode([
+                'codigo' => 1,
+                'mensaje' => 'Producto eliminado exitosamente',
+            ]);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'Error al eliminar APP',
+                'mensaje' => 'Error al eliminado producto',
                 'detalle' => $e->getMessage(),
             ]);
         }

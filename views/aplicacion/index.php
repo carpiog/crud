@@ -4,7 +4,7 @@
         <input type="hidden" name="app_id" id="app_id">
         <div class="row mb-3">
             <div class="col">
-                <label for="app_nombre">Nombre de la Aplicación</label>
+                <label for="nombre">Nombre de la App</label>
                 <input type="text" name="app_nombre" id="app_nombre" class="form-control">
             </div>
         </div>
@@ -23,17 +23,7 @@
 </div>
 <div class="row">
     <div class="col table-responsive">
-        <table class="table table-bordered table-hover" id="tablaAplicacion">
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Nombre</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-
-            </tbody>
+        <table class="table table-bordered table-hover w-100" id="tablaAplicacion">
         </table>
     </div>
 </div>
