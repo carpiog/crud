@@ -4,8 +4,10 @@ require_once __DIR__ . '/../includes/app.php';
 use Controllers\AplicacionController;
 use MVC\Router;
 use Controllers\AppController;
+use Controllers\LoginController;
 use Controllers\UsuarioController;
 use Controllers\RolController;
+
 
 $router = new Router();
 $router->setBaseURL('/' . $_ENV['APP_NAME']);
@@ -32,6 +34,17 @@ $router->post('/API/rol/guardar', [RolController::class, 'guardarAPI']);
 $router->get('/API/rol/buscar', [RolController::class, 'buscarAPI']);
 $router->post('/API/rol/modificar', [RolController::class, 'modificarAPI']);
 $router->post('/API/rol/eliminar', [RolController::class, 'eliminarAPI']);
+
+
+//LOGIN
+$router->get('/', [LoginController::class, 'login']);
+$router->get('/logout', [LoginController::class, 'logout']);
+$router->get('/menu', [LoginController::class, 'menu']);
+$router->get('/registro', [LoginController::class, 'registro']);
+$router->post('/API/registro', [LoginController::class, 'registroAPI']);
+$router->post('/API/login', [LoginController::class, 'loginAPI']);
+
+
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador
 $router->comprobarRutas();
