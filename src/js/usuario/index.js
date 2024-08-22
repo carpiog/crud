@@ -1,12 +1,53 @@
 import { Dropdown } from "bootstrap";
 import { Toast, validarFormulario } from "../funciones";
 import Swal from "sweetalert2";
+import DataTable from "datatables.net-bs5";
+import { lenguaje } from "../lenguaje";
 
 const formulario = document.getElementById('formUsuario');
 const tabla = document.getElementById('tablaUsuario');
 const btnGuardar = document.getElementById('btnGuardar');
 const btnModificar = document.getElementById('btnModificar');
 const btnCancelar = document.getElementById('btnCancelar');
+
+let contador = 1;
+const datatable = new DataTable('#tablaUsuario', {
+    data: null,
+    language: lenguaje,
+    pageLength: '15',
+    lengthMenu: [3, 9, 11, 25, 100],
+    columns: [
+        {
+            title: 'No.',
+            data: 'id',
+            width: '2%',
+            render: (data, type, row, meta) => {
+                return meta.row + 1;
+            }
+        },
+        {
+            title: 'Nombre',
+            data: 'usu_nombre'
+        },
+        {
+            title: 'Catalogo',
+            data: 'usu_catalogo'
+        },
+        {
+            title: 'Acciones',
+            data: 'usu_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => {
+                let html = `
+                <button class='btn btn-warning modificar' data-id="${data}" data-nombre="${row.usu_nombre}" data-catalogo="${row.usu_catalogo}" data-password="${row.usu_password}"><i class='bi bi-pencil-square'></i>Modificar</button>
+                <button class='btn btn-danger eliminar' data-id="${data}">Eliminar</button>
+                `;
+                return html;
+            }
+        }
+    ]
+});
 
 btnModificar.parentElement.style.display = 'none';
 btnModificar.disabled = true;
@@ -18,7 +59,7 @@ const guardar = async (e) => {
 
     if (!validarFormulario(formulario, ['usu_id'])) {
         Swal.fire({
-            title: "Campos vacíos",
+            title: "Campos vacios",
             text: "Debe llenar todos los campos",
             icon: "info"
         });
@@ -37,7 +78,7 @@ const guardar = async (e) => {
         const data = await respuesta.json();
         const { codigo, mensaje, detalle } = data;
         let icon = 'info';
-        if (codigo == 1) {
+        if (codigo === 1) {
             icon = 'success';
             formulario.reset();
             buscar();
@@ -60,59 +101,18 @@ const buscar = async () => {
     try {
         const url = "/crud/API/usuario/buscar";
         const config = {
-            method: 'GET',
+            method: 'GET'
         };
 
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
         const { codigo, mensaje, detalle, datos } = data;
-        tabla.tBodies[0].innerHTML = '';
-        const fragment = document.createDocumentFragment();
-        if (codigo == 1) {
-            let counter = 1;
-            datos.forEach(usuario => {
-                const tr = document.createElement('tr');
-                const td1 = document.createElement('td');
-                const td2 = document.createElement('td');
-                const td3 = document.createElement('td');
-                const td4 = document.createElement('td');
-                const buttonModificar = document.createElement('button');
-                const buttonEliminar = document.createElement('button');
 
-                td1.innerText = counter;
-                td2.innerText = usuario.usu_nombre;
-                td3.innerText = usuario.usu_catalogo;
+        datatable.clear().draw();
 
-                buttonModificar.classList.add('btn', 'btn-warning');
-                buttonEliminar.classList.add('btn', 'btn-danger');
-                buttonModificar.innerText = 'Modificar';
-                buttonEliminar.innerText = 'Eliminar';
-
-                buttonModificar.addEventListener('click', () => traerDatos(usuario));
-                buttonEliminar.addEventListener('click', () => eliminar(usuario));
-
-                td4.appendChild(buttonModificar);
-                td4.appendChild(buttonEliminar);
-
-                counter++;
-
-                tr.appendChild(td1);
-                tr.appendChild(td2);
-                tr.appendChild(td3);
-                tr.appendChild(td4);
-                fragment.appendChild(tr);
-            });
-        } else {
-            const tr = document.createElement('tr');
-            const td = document.createElement('td');
-            td.innerText = "No hay usuarios";
-            td.colSpan = 4;
-
-            tr.appendChild(td);
-            fragment.appendChild(tr);
+        if (datos) {
+            datatable.rows.add(datos).draw();
         }
-
-        tabla.tBodies[0].appendChild(fragment);
 
     } catch (error) {
         console.log(error);
@@ -120,10 +120,14 @@ const buscar = async () => {
 };
 buscar();
 
-const traerDatos = (usuario) => {
-    formulario.usu_id.value = usuario.usu_id;
-    formulario.usu_nombre.value = usuario.usu_nombre;
-    formulario.usu_catalogo.value = usuario.usu_catalogo;
+const traerDatos = (e) => {
+    const elemento = e.currentTarget.dataset;
+
+    formulario.usu_id.value = elemento.id || '';
+    formulario.usu_nombre.value = elemento.usu_nombre || '';
+    formulario.usu_catalogo.value = elemento.usu_catalogo || '';
+    formulario.usu_password.value = elemento.usu_password || '';
+
     tabla.parentElement.parentElement.style.display = 'none';
 
     btnGuardar.parentElement.style.display = 'none';
@@ -134,7 +138,29 @@ const traerDatos = (usuario) => {
     btnCancelar.disabled = false;
 };
 
-const modificar = async () => {
+const cancelar = () => {
+    tabla.parentElement.parentElement.style.display = '';
+    formulario.reset();
+    btnGuardar.parentElement.style.display = '';
+    btnGuardar.disabled = false;
+    btnModificar.parentElement.style.display = 'none';
+    btnModificar.disabled = true;
+    btnCancelar.parentElement.style.display = 'none';
+    btnCancelar.disabled = true;
+};
+
+const modificar = async (e) => {
+    e.preventDefault();
+
+    if (!validarFormulario(formulario)) {
+        Swal.fire({
+            title: "Campos vacios",
+            text: "Debe llenar todos los campos",
+            icon: "info"
+        });
+        return;
+    }
+
     try {
         const body = new FormData(formulario);
         const url = "/crud/API/usuario/modificar";
@@ -147,7 +173,7 @@ const modificar = async () => {
         const data = await respuesta.json();
         const { codigo, mensaje, detalle } = data;
         let icon = 'info';
-        if (codigo == 1) {
+        if (codigo === 1) {
             icon = 'success';
             formulario.reset();
             buscar();
@@ -167,23 +193,23 @@ const modificar = async () => {
     }
 };
 
-const eliminar = async (usuario) => {
-    const result = await Swal.fire({
-        title: '¿Estás seguro?',
-        text: `Eliminarás el usuario ${usuario.usu_nombre}`,
-        icon: 'warning',
+const eliminar = async (e) => {
+    const id = e.currentTarget.dataset.id;
+    let confirmacion = await Swal.fire({
+        icon: 'question',
+        title: 'Confirmacion',
+        text: '¿Está seguro que desea eliminar este registro?',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
         confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar'
+        cancelButtonText: 'No, cancelar',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33'
     });
-
-    if (result.isConfirmed) {
+    
+    if (confirmacion.isConfirmed) {
         try {
             const body = new FormData();
-            body.append('usu_id', usuario.usu_id);
-
+            body.append('usu_id', id);
             const url = "/crud/API/usuario/eliminar";
             const config = {
                 method: 'POST',
@@ -194,8 +220,9 @@ const eliminar = async (usuario) => {
             const data = await respuesta.json();
             const { codigo, mensaje, detalle } = data;
             let icon = 'info';
-            if (codigo == 1) {
+            if (codigo === 1) {
                 icon = 'success';
+                formulario.reset();
                 buscar();
             } else {
                 icon = 'error';
@@ -206,24 +233,14 @@ const eliminar = async (usuario) => {
                 icon: icon,
                 title: mensaje
             });
-
         } catch (error) {
             console.log(error);
         }
     }
 };
 
-const cancelar = () => {
-    tabla.parentElement.parentElement.style.display = '';
-    formulario.reset();
-    btnGuardar.parentElement.style.display = '';
-    btnGuardar.disabled = false;
-    btnModificar.parentElement.style.display = 'none';
-    btnModificar.disabled = true;
-    btnCancelar.parentElement.style.display = 'none';
-    btnCancelar.disabled = true;
-};
-
-btnGuardar.addEventListener('click', guardar);
-btnModificar.addEventListener('click', modificar);
+formulario.addEventListener('submit', guardar);
 btnCancelar.addEventListener('click', cancelar);
+btnModificar.addEventListener('click', modificar);
+datatable.on('click', '.modificar', traerDatos);
+datatable.on('click', '.eliminar', eliminar);
