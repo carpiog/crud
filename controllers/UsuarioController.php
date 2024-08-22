@@ -109,7 +109,7 @@ class UsuarioController
                     'mensaje' => 'Usuario eliminado exitosamente',
                 ]);
             } else {
-                http_response_code(404); // No encontrado
+                http_response_code(404);
                 echo json_encode([
                     'codigo' => 0,
                     'mensaje' => 'Usuario no encontrado',
