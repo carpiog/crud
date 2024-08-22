@@ -1,4 +1,9 @@
-<h1 class="text-center">Formulario de Roles</h1>
+<?php
+use Model\Aplicacion;
+$aplicacion = new Aplicacion($_GET);
+$aplicaciones = $aplicacion->buscarApp();
+?>
+<h1 class="text-center">Asignacion de Roles</h1>
 <div class="row justify-content-center mb-4">
     <form id="formRol" class="border shadow p-4 col-lg-4">
         <input type="hidden" name="rol_id" id="rol_id">
@@ -10,17 +15,18 @@
         </div>
         <div class="row mb-3">
             <div class="col">
-                <label for="rol_nombre_ct">Nombre Corto</label>
+                <label for="rol_nombre_ct">Categoria del Rol</label>
                 <input type="text" name="rol_nombre_ct" id="rol_nombre_ct" class="form-control">
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col">
-                <label for="rol_app">Aplicación</label>
-                <select name="rol_app" id="rol_app" class="form-select">
-                    <?php foreach($aplicaciones as $aplicacion): ?>
-                        <option value="<?= $aplicacion->app_nombre; ?>"></option>
-                    <?php endforeach; ?>
+        <div class="col">
+                <label for="rol_app">APP</label>
+                <select name="rol_app" id="rol_app" class="form-control">
+                    <option value="">SELECCIONE...</option>
+                    <?php foreach ($aplicaciones as $aplicacion) : ?>
+                        <option value="<?= $aplicacion['app_id'] ?>"> <?= $aplicacion['app_nombre'] ?></option>
+                    <?php endforeach ?>
                 </select>
             </div>
         </div>
@@ -42,15 +48,16 @@
         <table class="table table-bordered table-hover" id="tablaRol">
             <thead>
                 <tr>
-                    <th>No.</th>
-                    <th>Nombre</th>
-                    <th>Nombre Corto</th>
-                    <th>Aplicación</th>
-                    <th>Acciones</th>
+                    <th>NO.</th>
+                    <th>Nombre del rol</th>
+                    <th>Categoria</th>
+                    <th>Aplicacion asignada</th>
+                    <th>modificar</th>
+                    <th>eliminar</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Los datos se llenan dinámicamente -->
+
             </tbody>
         </table>
     </div>

@@ -25,4 +25,20 @@ class Aplicacion extends ActiveRecord
         $sql = "SELECT * FROM aplicacion where app_situacion = 1";
         return self::fetchArray($sql);
     }
+
+    public function buscarApp()
+    {
+        $sql = "SELECT * from aplicacion where app_situacion = 1 ";
+
+        if ($this->app_nombre != '') {
+            $sql .= " and app_nombre like '%$this->app_nombre%' ";
+        }
+
+
+        if ($this->app_id != null) {
+            $sql .= " and app_id = $this->app_id ";
+        }
+        return self::fetchArray($sql);
+
+    }
 };
