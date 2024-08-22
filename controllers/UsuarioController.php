@@ -91,7 +91,6 @@ class UsuarioController
             ]);
         }
     }
-
     public static function eliminarAPI()
     {
 
@@ -103,13 +102,13 @@ class UsuarioController
             http_response_code(200);
             echo json_encode([
                 'codigo' => 1,
-                'mensaje' => 'Usuario eliminado exitosamente',
+                'mensaje' => 'Producto eliminado exitosamente',
             ]);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode([
                 'codigo' => 0,
-                'mensaje' => 'Error al eliminadar al usuario',
+                'mensaje' => 'Error al eliminado producto',
                 'detalle' => $e->getMessage(),
             ]);
         }

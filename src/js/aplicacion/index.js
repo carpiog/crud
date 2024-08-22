@@ -238,7 +238,7 @@ const modificar = async (e) => {
     }
 }
 
-const eliminar = async (e) => {
+const eliminar = async (aplicacion) => {
     const id = e.currentTarget.dataset.id
     let confirmacion = await Swal.fire({
         icon: 'question',
@@ -255,7 +255,7 @@ const eliminar = async (e) => {
     if (confirmacion.isConfirmed) {
         try {
             const body = new FormData()
-            body.append('app_id', id)
+            body.append('id', aplicacion.app_id)
             const url = "/crud/API/aplicacion/eliminar"
             const config = {
                 method: 'POST',
